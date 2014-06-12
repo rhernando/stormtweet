@@ -7,6 +7,7 @@ https://github.com/nathanmarz/storm/wiki/Clojure-DSL"
   (:require [backtype.storm [clojure :refer [emit-bolt! defbolt ack! bolt]]]))
 
 (defbolt stormy-bolt ["stormy"] [{{text :text} :tweet :as tuple} collector]
+  (println "ajajajajaaaaja")(println text)
   (emit-bolt! collector [text]
               :anchor tuple)
   (ack! collector tuple))

@@ -22,13 +22,17 @@
                                 "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
                                 "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
                                 "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"))
+(def-twitter-streaming-method public-stream :post "user.json")
 
-(def proxy {:host "194.140.11.77" :port 80})
+(def infproxy {:host "194.140.11.77" :port 80})
 (defspout twitter-spout ["tweet"]
   [conf context collector]
 
- (let [tweet-channel (channel)
-        connection    (user-stream :oauth-creds my-creds :proxy proxy)
+  (let [tweet-channel (channel)
+        connection    (statuses-filter :params {:track "rey"}
+                                       :oauth-creds my-creds
+                                       :proxy infproxy
+                                       )
         callback      (AsyncStreamingCallback.
                        (fn on-body-part [response byte-stream]
                          (->> byte-stream
@@ -40,14 +44,10 @@
                        (fn on-exception [response]
                          (println "on-exception")))]
 
-    (statuses-filter :params {:track "a"}
-         :oauth-creds my-creds
-         :callbacks callback
-         )
+
 
     (spout
      (nextTuple []
-                (println "sjsjsjsjsjsj")
                 (emit-spout! collector [@(read-channel tweet-channel)]))
      (ack [id]
           ;; You only need to define this method for reliable spouts
