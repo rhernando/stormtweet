@@ -6,12 +6,11 @@ More info on the Clojure DSL here:
 https://github.com/nathanmarz/storm/wiki/Clojure-DSL"
   (:require [backtype.storm [clojure :refer [emit-bolt! defbolt ack! bolt]]]))
 
-(defbolt stormy-bolt ["stormy"] [{{text :text} :tweet :as tuple} collector]
-  (println "ajajajajaaaaja")(println text)
-  (emit-bolt! collector [text]
+(defbolt stormy-bolt ["tweet"] [{{text :text} :tweet :as tuple} collector]
+
+ (emit-bolt! collector [(if (< 50 (count text))
+                           "I'm a short tweet!"
+                           "I'm a long tweet!")]
               :anchor tuple)
   (ack! collector tuple))
 
-(defbolt stormtweet-bolt ["message"] [{stormy :stormy :as tuple} collector]
-  (emit-bolt! collector [(str "stormtweet produced: "stormy)] :anchor tuple)
-  (ack! collector tuple))

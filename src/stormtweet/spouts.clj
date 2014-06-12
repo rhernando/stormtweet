@@ -22,18 +22,17 @@
                                 "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
                                 "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
                                 "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"))
-(def-twitter-streaming-method public-stream :post "user.json")
 
 (def infproxy {:host "194.140.11.77" :port 80})
 (defspout twitter-spout ["tweet"]
   [conf context collector]
 
   (let [tweet-channel (channel)
-        connection    (statuses-filter :params {:track "rey"}
+        connection    (statuses-filter :params {:track "mundial"}
                                        :oauth-creds my-creds
                                        :proxy infproxy
-                                       )
-        callback      (AsyncStreamingCallback.
+
+        :callbacks      (AsyncStreamingCallback.
                        (fn on-body-part [response byte-stream]
                          (->> byte-stream
                               str
@@ -42,7 +41,7 @@
                        (fn on-failure [response]
                          (println "response"))
                        (fn on-exception [response]
-                         (println "on-exception")))]
+                         (println "on-exception"))))]
 
 
 
