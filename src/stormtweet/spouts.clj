@@ -18,31 +18,26 @@
   (:import
    (twitter.callbacks.protocols AsyncStreamingCallback)))
 
-(def my-creds (make-oauth-creds "ziSzNkrNzeQ2pjdGUZYmw"
+(def oath-creds (make-oauth-creds "ziSzNkrNzeQ2pjdGUZYmw"
                                 "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
                                 "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
                                 "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"))
 
 (def infproxy {:host "194.140.11.77" :port 80})
+
+
 (defspout twitter-spout ["tweet"]
   [conf context collector]
 
-  (let [tweet-channel (channel)
-        connection    (statuses-filter :params {:track "mundial"}
-                                       :oauth-creds my-creds
-                                       :proxy infproxy
+   (let [tweet-channel (channel)
 
-        :callbacks      (AsyncStreamingCallback.
-                       (fn on-body-part [response byte-stream]
-                         (->> byte-stream
-                              str
-                              json/read-json
-                              (enqueue tweet-channel)))
-                       (fn on-failure [response]
-                         (println "response"))
-                       (fn on-exception [response]
-                         (println "on-exception"))))]
-
+        callback     (AsyncStreamingCallback. (comp println #(:text %) json/read-json #(str %2))
+                      (comp println response-return-everything)
+                  exception-print)
+         connection    (statuses-filter :params {:track "rey"}
+                     :proxy infproxy
+                     :oauth-creds oath-creds
+                     :callbacks callback)]
 
 
     (spout

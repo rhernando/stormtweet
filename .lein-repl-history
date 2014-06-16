@@ -3,3 +3,103 @@
 (:require [http.async.client.request :as requ])
 (:require [http.async.client :as requ])
 (:require [twitter.api.streaming])
+(count "{"created_at":"Fri Jun 13 11:42:27 +0000 2014","id":477415700554735618,"id_str":"477415700554735618","text":"Predice los marcadores del mundial y GANA con @Orbitel hasta USD $4.000. Ingresa ya a http:\/\/t.co\/tBMpPL70Ss \u00a1es muy f\u00e1cil!","source":"\u003ca href=\"http:\/\/www.mundialorbitel.com\" rel=\"nofollow\"\u003eMundial Orbitel 2014\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2510485727,"id_str":"2510485727","name":"Edwar","screen_name":"eduar020973","location":"vitoria pais vasco","url":null,"description":null,"protected":false,"verified":false,"followers_count":3,"friends_count":20,"listed_count":0,"favourites_count":1,"statuses_count":8,"created_at":"Sat Apr 26 12:46:31 +0000 2014","utc_offset":null,"time_zone":")
+{"created_at":"Fri Jun 13 11:42:27 +0000 2014","id":477415700554735618,"id_str":"477415700554735618","text":"Predice los marcadores del mundial y GANA con @Orbitel hasta USD $4.000. Ingresa ya a http:\/\/t.co\/tBMpPL70Ss \u00a1es muy f\u00e1cil!","source":"\u003ca href=\"http:\/\/www.mundialorbitel.com\" rel=\"nofollow\"\u003eMundial Orbitel 2014\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2510485727,"id_str":"2510485727","name":"Edwar","screen_name":"eduar020973","location":"vitoria pais vasco","url":null,"description":null,"protected":false,"verified":false,"followers_count":3,"friends_count":20,"listed_count":0,"favourites_count":1,"statuses_count":8,"created_at":"Sat Apr 26 12:46:31 +0000 2014","utc_offset":null,"time_zone":0}"
+{"created_at":"Fri Jun 13 11:42:27 +0000 2014","id":477415700554735618,"id_str":"477415700554735618","text":"Predice los marcadores del mundial y GANA con @Orbitel hasta USD $4.000. Ingresa ya a http:\/\/t.co\/tBMpPL70Ss \u00a1es muy f\u00e1cil!","source":"\u003ca href=\"http:\/\/www.mundialorbitel.com\" rel=\"nofollow\"\u003eMundial Orbitel 2014\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2510485727,"id_str":"2510485727","name":"Edwar","screen_name":"eduar020973","location":"vitoria pais vasco","url":null,"description":null,"protected":false,"verified":false,"followers_count":3,"friends_count":20,"listed_count":0,"favourites_count":1,"statuses_count":8,"created_at":"Sat Apr 26 12:46:31 +0000 2014","utc_offset":null,"time_zone":0}
+{"created_at":"Fri Jun 13 11:42:27 +0000 2014","id":477415700554735618,"id_str":"477415700554735618","text":"Predice los marcadores del mundial y GANA con @Orbitel hasta USD $4.000. Ingresa ya a http:\/\/t.co\/tBMpPL70Ss \u00a1es muy f\u00e1cil!","source":"\u003ca href=\"http:\/\/www.mundialorbitel.com\" rel=\"nofollow\"\u003eMundial Orbitel 2014\u003c\/a\u003e","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2510485727,"id_str":"2510485727","name":"Edwar","screen_name":"eduar020973","location":"vitoria pais vasco","url":null,"description":null,"protected":false,"verified":false,"followers_count":3,"friends_count":20,"listed_count":0,"favourites_count":1,"statuses_count":8,"created_at":"Sat Apr 26 12:46:31 +0000 2014","utc_offset":null,"time_zone":"Fri Jun 13 11:42:27 +0000 2014""id":477415700554735618"id_str""477415700554735618""text"","":"\/\"\"2014\<\>","":false,"":null,"":null,"":null,"":null,"":null,"":{"":2510485727,"":"2510485727","#<core$name clojure.core$name@834f715>":"","":"","":"","":null,"":null,"":false,"":false,"":3,"":20,"":0,"":1,"":8,"":"2602014","":null,"
+a
+(:require
+   [backtype.storm [clojure :refer [defspout spout emit-spout!]]]
+   [clojure.data.json :as json]
+   [http.async.client :as ac]
+   [clojure.tools.trace]
+   )
+(require
+[clojure.data.json :as json]
+[http.async.client :as ac]
+[clojure.tools.trace]
+)
+(System/getProperty "java.class.path")
+lein deps 
+(require '[clojure.data.json :as json])
+(require '[http.async.client :as ac])
+(:use [lamina.core])
+(use [lamina.core])
+(use '[lamina.core])
+(use '[twitter.oauth] [twitter.callbacks])
+(use '[twitter.oauth] '[twitter.callbacks])
+(use '[twitter.oauth] '[twitter.callbacks] '[twitter.callbacks.handlers] '[twitter.api.streaming])
+(:import
+   (twitter.callbacks.protocols AsyncStreamingCallback))
+(def oath-creds (make-oauth-creds "ziSzNkrNzeQ2pjdGUZYmw"
+                                "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
+                                "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
+                                "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"))
+(def infproxy {:host "194.140.11.77" :port 80})
+(let [tweet-channel (channel)
+ callback      (AsyncStreamingCallback.
+                       (fn on-body-part [response byte-stream]
+                         (->> byte-stream
+                              str
+                              json/read-str {:eof-error? true}                              
+                              (enqueue tweet-channel)))
+                       (fn on-failure [response]
+                         (println response))
+                       (fn on-exception [response]
+                         (println response)))
+connection    (statuses-filter :params {:track "mundial"}
+                     :proxy infproxy
+                     :oauth-creds oath-creds
+                     :callbacks callback)]
+)
+(import twitter.callbacks.protocols AsyncStreamingCallback)
+(import 'twitter.callbacks.protocols AsyncStreamingCallback)
+(import 'twitter.callbacks.protocols.AsyncStreamingCallback)
+(let [tweet-channel (channel)
+callback      (AsyncStreamingCallback.
+                       (fn on-body-part [response byte-stream]
+                         (->> byte-stream
+                              str
+                              json/read-str {:eof-error? true}                              
+                              (enqueue tweet-channel)))
+                       (fn on-failure [response]
+                         (println response))
+                       (fn on-exception [response]
+                         (println response)))
+         connection    (statuses-filter :params {:track "mundial"}
+                     :proxy infproxy
+                     :oauth-creds oath-creds
+                     :callbacks callback)]
+)
+connection
+(connection)
+(def ^:dynamic *response* (user-stream :oauth-creds my-creds))
+(def ^:dynamic *response* (user-stream :oauth-creds oath-creds))
+(def ^:dynamic 
+     *custom-streaming-callback* 
+     (AsyncStreamingCallback. (comp println #(:text %) json/read-json #(str %2)) 
+                      (comp println response-return-everything)
+                  exception-print))
+(statuses-filter :params {:track "Borat"}
+         :oauth-creds my-creds
+         :callbacks *custom-streaming-callback*)
+(def my-creds (make-oauth-creds "ziSzNkrNzeQ2pjdGUZYmw"
+                                "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
+                                "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
+                                "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"))
+(def ^:dynamic *response* (user-stream :oauth-creds my-creds))
+(def ^:dynamic 
+     *custom-streaming-callback* 
+     (AsyncStreamingCallback. (comp println #(:text %) json/read-json #(str %2)) 
+                      (comp println response-return-everything)
+                  exception-print))
+(statuses-filter :params {:track "Borat"}
+         :oauth-creds my-creds
+         :callbacks *custom-streaming-callback*)
+(def infproxy {:host "194.140.11.77" :port 80})
+(def ^:dynamic *response* (user-stream :oauth-creds my-creds :proxy infproxy))
+(statuses-filter :params {:track "Borat"}
+         :oauth-creds my-creds
+:callbacks *custom-streaming-callback*
+:proxy infproxy
+)
