@@ -17,7 +17,7 @@ https://github.com/nathanmarz/storm/wiki/Clojure-DSL"
         (shell-spout-spec
             ["ruby" "stream_twitter.rb"]
             ;; Stream declaration:
-            ["word"]
+            ["tweet"]
         )
     }
 

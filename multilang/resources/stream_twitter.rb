@@ -4,6 +4,7 @@ require "twitter"
 
 
 $words = ["nathan", "mike", "jackson", "golda", "bertels人"]
+$client = nil
 def random_word
   $words[rand($words.length)]
 end
@@ -11,9 +12,17 @@ end
 class StreamTwitter < Storm::Spout
   attr_accessor :uid, :pending
   def open(conf, context)
-    emit ['spout initializing']
+    #emit ['spout initializing']
     self.pending = {}
     self.uid = 0
+
+    $client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = "ziSzNkrNzeQ2pjdGUZYmw"
+      config.consumer_secret     = "JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4"
+      config.access_token        = "1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8"
+      config.access_token_secret = "QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA"
+      config.proxy = 'https://194.140.11.77:80'
+    end
 
   end
   def nextTuple
@@ -21,29 +30,19 @@ class StreamTwitter < Storm::Spout
     word = random_word
     id = self.uid += 1
     self.pending[id] = word
-    emit [word], :id => id
+    #emit [word], :id => id
 
-    client = Twitter::Streaming::Client.new do |config|
-      config.consumer_key       = 'ziSzNkrNzeQ2pjdGUZYmw'
-      config.consumer_secret    = 'JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4'
-      config.oauth_token        = '1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8'
-      config.oauth_token_secret = 'QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA'
-      config.proxy = 'http://194.140.11.77:80'
-    end
+    #client = Twitter::Streaming::Client.new do |config|
+    #  config.consumer_key       = 'ziSzNkrNzeQ2pjdGUZYmw'
+    #  config.consumer_secret    = 'JApCmbjr5Hjx0LTTMfcmIM20g6ID54o4Vub6TcfB4'
+    #  config.oauth_token        = '1012280850-Pb7EA6urmlDWVkKOuuLB9IAvGqyw4JiJVYTMEx8'
+    #  config.oauth_token_secret = 'QAh47SHFRTElih0sSPFTbrFyE6QpVEDA4XarIzM4WA'
+    #  config.proxy = 'http://194.140.11.77:80'
+    #end
 
     topics = ["mundial", "brasil"]
-    client.filter(:track => topics.join(",")) do |object|
-      case object
-  when Twitter::Tweet
-    puts "It's a tweet!"
-  when Twitter::DirectMessage
-    puts "It's a direct message!"
-  when Twitter::Streaming::StallWarning
-    warn "Falling behind!"
-  end
-      emit [object]
-      puts object.text if object.is_a?(Twitter::Tweet)
-      emit [status.text]
+    $client.search(topics.join(","), :result_type => "recent").take(3).each do |tweet|
+      emit [{:text => tweet.text}]
     end
 
 
